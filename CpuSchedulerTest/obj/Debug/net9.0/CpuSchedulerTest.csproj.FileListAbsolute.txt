@@ -1,0 +1,15 @@
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.AssemblyInfoInputs.cache
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.AssemblyInfo.cs
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.csproj.CoreCompileInputs.cache
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.sourcelink.json
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\bin\Debug\net9.0\CpuSchedulerTest.exe
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\bin\Debug\net9.0\CpuSchedulerTest.deps.json
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\bin\Debug\net9.0\CpuSchedulerTest.runtimeconfig.json
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\bin\Debug\net9.0\CpuSchedulerTest.dll
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\bin\Debug\net9.0\CpuSchedulerTest.pdb
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.dll
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\refint\CpuSchedulerTest.dll
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.pdb
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\CpuSchedulerTest.genruntimeconfig.cache
+C:\Users\jonah\OneDrive\Documents\GitHub\OS-CPU-Scheduler\CpuSchedulerTest\obj\Debug\net9.0\ref\CpuSchedulerTest.dll
