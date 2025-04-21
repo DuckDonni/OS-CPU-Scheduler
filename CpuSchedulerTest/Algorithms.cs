@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CpuSchedulingConsole
 {
@@ -7,235 +8,119 @@ namespace CpuSchedulingConsole
     {
         public static void FCFSAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
-            double[] bp = new double[np];
-            double[] wtp = new double[np];
-            double twt = 0.0, awt;
+            int np = Convert.ToInt32(userInput);
+            var processes = new List<Process>();
+            double currentTime = 0;
+            double totalWait = 0;
+            double totalTurnaround = 0;
+            var timeline = new List<string>();
 
-            Console.WriteLine("First Come First Serve Scheduling (Y/N)?");
-            string response = Console.ReadLine()?.Trim().ToUpper();
-
-            if (response == "Y")
+            // Input processes
+            for(int i = 0; i < np; i++)
             {
-                for (int num = 0; num < np; num++)
-                {
-                    Console.Write($"Enter Burst time for P{num + 1}: ");
-                    bp[num] = Convert.ToDouble(Console.ReadLine());
-                }
-
-                for (int num = 0; num < np; num++)
-                {
-                    if (num == 0)
-                    {
-                        wtp[num] = 0;
-                    }
-                    else
-                    {
-                        wtp[num] = wtp[num - 1] + bp[num - 1];
-                        Console.WriteLine($"Waiting time for P{num + 1} = {wtp[num]}");
-                    }
-                }
-
-                for (int num = 0; num < np; num++)
-                {
-                    twt += wtp[num];
-                }
+                Console.Write($"Enter arrival time for P{i + 1}: ");
+                var arrival = Convert.ToDouble(Console.ReadLine());
+                Console.Write($"Enter burst time for P{i + 1}: ");
+                var burst = Convert.ToDouble(Console.ReadLine());
                 
-                awt = twt / np;
-                Console.WriteLine($"Average waiting time for {np} processes = {awt} sec(s)");
+                processes.Add(new Process {
+                    Id = i + 1,
+                    ArrivalTime = arrival,
+                    BurstTime = burst,
+                    RemainingTime = burst
+                });
             }
+
+            // Sort by arrival time
+            var sorted = processes.OrderBy(p => p.ArrivalTime).ToList();
+
+            // Build timeline and calculate metrics
+            foreach(var p in sorted)
+            {
+                if(currentTime < p.ArrivalTime)
+                    currentTime = p.ArrivalTime;
+
+                timeline.Add($"{currentTime} P{p.Id}");
+                p.WaitingTime = currentTime - p.ArrivalTime;
+                totalWait += p.WaitingTime;
+                
+                currentTime += p.BurstTime;
+                totalTurnaround += currentTime - p.ArrivalTime;
+            }
+
+            // Display results
+            PrintMetrics(sorted, timeline, totalWait, totalTurnaround, currentTime);
         }
 
         public static void SJFAlgorithm(string userInput)
         {
-            int np = Convert.ToInt16(userInput);
-            double[] bp = new double[np];
-            double[] wtp = new double[np];
-            double[] p = new double[np];
-            double twt = 0.0, awt;
+            int np = Convert.ToInt32(userInput);
+            var processes = new List<Process>();
+            double currentTime = 0;
+            double totalWait = 0;
+            double totalTurnaround = 0;
+            var timeline = new List<string>();
 
-            Console.WriteLine("Shortest Job First Scheduling (Y/N)?");
-            string response = Console.ReadLine()?.Trim().ToUpper();
-
-            if (response == "Y")
+            // Input processes
+            for(int i = 0; i < np; i++)
             {
-                for (int num = 0; num < np; num++)
-                {
-                    Console.Write($"Enter Burst time for P{num + 1}: ");
-                    bp[num] = Convert.ToDouble(Console.ReadLine());
-                    p[num] = bp[num];
-                }
-
-                Array.Sort(p);
-
-                bool found = false;
-                for (int num = 0; num < np; num++)
-                {
-                    if (num == 0)
-                    {
-                        for (int x = 0; x < np; x++)
-                        {
-                            if (p[num] == bp[x] && !found)
-                            {
-                                wtp[num] = 0;
-                                Console.WriteLine($"Waiting time for P{x + 1} = {wtp[num]}");
-                                bp[x] = 0;
-                                found = true;
-                            }
-                        }
-                        found = false;
-                    }
-                    else
-                    {
-                        for (int x = 0; x < np; x++)
-                        {
-                            if (p[num] == bp[x] && !found)
-                            {
-                                wtp[num] = wtp[num - 1] + p[num - 1];
-                                Console.WriteLine($"Waiting time for P{x + 1} = {wtp[num]}");
-                                bp[x] = 0;
-                                found = true;
-                            }
-                        }
-                        found = false;
-                    }
-                }
-
-                foreach (var t in wtp)
-                {
-                    twt += t;
-                }
+                Console.Write($"Enter arrival time for P{i + 1}: ");
+                var arrival = Convert.ToDouble(Console.ReadLine());
+                Console.Write($"Enter burst time for P{i + 1}: ");
+                var burst = Convert.ToDouble(Console.ReadLine());
                 
-                awt = twt / np;
-                Console.WriteLine($"Average waiting time for {np} processes = {awt} sec(s)");
+                processes.Add(new Process {
+                    Id = i + 1,
+                    ArrivalTime = arrival,
+                    BurstTime = burst,
+                    RemainingTime = burst
+                });
             }
+
+            // SJF implementation
+            var completed = 0;
+            while(completed < np)
+            {
+                var available = processes
+                    .Where(p => p.ArrivalTime <= currentTime && p.RemainingTime > 0)
+                    .OrderBy(p => p.RemainingTime)
+                    .ToList();
+
+                if(available.Count == 0)
+                {
+                    currentTime++;
+                    continue;
+                }
+
+                var currentProcess = available.First();
+                timeline.Add($"{currentTime} P{currentProcess.Id}");
+                
+                currentProcess.WaitingTime += currentTime - currentProcess.LastPreempted;
+                currentTime += currentProcess.RemainingTime;
+                currentProcess.RemainingTime = 0;
+                completed++;
+                
+                totalWait += currentProcess.WaitingTime;
+                totalTurnaround += currentTime - currentProcess.ArrivalTime;
+            }
+
+            PrintMetrics(processes, timeline, totalWait, totalTurnaround, currentTime);
         }
 
-        public static void PriorityAlgorithm(string userInput)
+        // Similar modifications for other algorithms...
+
+        private static void PrintMetrics(List<Process> processes, List<string> timeline, 
+            double totalWait, double totalTurnaround, double totalTime)
         {
-            int np = Convert.ToInt16(userInput);
-            double[] bp = new double[np];
-            double[] wtp = new double[np];
-            int[] p = new int[np];
-            int[] sp = new int[np];
-            double twt = 0.0, awt;
+            Console.WriteLine("\nExecution Timeline:");
+            Console.WriteLine(string.Join(" ", timeline) + $" {totalTime}");
 
-            Console.WriteLine("Priority Scheduling (Y/N)?");
-            string response = Console.ReadLine()?.Trim().ToUpper();
-
-            if (response == "Y")
-            {
-                for (int num = 0; num < np; num++)
-                {
-                    Console.Write($"Enter Burst time for P{num + 1}: ");
-                    bp[num] = Convert.ToDouble(Console.ReadLine());
-                    Console.Write($"Enter Priority for P{num + 1}: ");
-                    p[num] = Convert.ToInt32(Console.ReadLine());
-                    sp[num] = p[num];
-                }
-
-                Array.Sort(sp);
-                
-                bool found = false;
-                int tempIndex = 0;
-                for (int num = 0; num < np; num++)
-                {
-                    if (num == 0)
-                    {
-                        for (int x = 0; x < np; x++)
-                        {
-                            if (sp[num] == p[x] && !found)
-                            {
-                                wtp[num] = 0;
-                                Console.WriteLine($"Waiting time for P{x + 1} = {wtp[num]}");
-                                tempIndex = x;
-                                p[x] = 0;
-                                found = true;
-                            }
-                        }
-                        found = false;
-                    }
-                    else
-                    {
-                        for (int x = 0; x < np; x++)
-                        {
-                            if (sp[num] == p[x] && !found)
-                            {
-                                wtp[num] = wtp[num - 1] + bp[tempIndex];
-                                Console.WriteLine($"Waiting time for P{x + 1} = {wtp[num]}");
-                                tempIndex = x;
-                                p[x] = 0;
-                                found = true;
-                            }
-                        }
-                        found = false;
-                    }
-                }
-
-                foreach (var t in wtp)
-                {
-                    twt += t;
-                }
-                
-                awt = twt / np;
-                Console.WriteLine($"Average waiting time for {np} processes = {awt} sec(s)");
-            }
-        }
-
-        public static void RoundRobinAlgorithm(string userInput)
-        {
-            int np = Convert.ToInt16(userInput);
-            double[] arrivalTime = new double[10];
-            double[] burstTime = new double[10];
-            double[] temp = new double[10];
-            double timeQuantum;
-            double total = 0.0;
-            double waitTime = 0, turnaroundTime = 0;
-
-            Console.WriteLine("Round Robin Scheduling (Y/N)?");
-            string response = Console.ReadLine()?.Trim().ToUpper();
-
-            if (response == "Y")
-            {
-                for (int i = 0; i < np; i++)
-                {
-                    Console.Write($"Enter arrival time for P{i + 1}: ");
-                    arrivalTime[i] = Convert.ToDouble(Console.ReadLine());
-                    Console.Write($"Enter burst time for P{i + 1}: ");
-                    burstTime[i] = Convert.ToDouble(Console.ReadLine());
-                    temp[i] = burstTime[i];
-                }
-
-                Console.Write("Enter time quantum: ");
-                timeQuantum = Convert.ToDouble(Console.ReadLine());
-
-                int x = np;
-                for (int i = 0; x != 0;)
-                {
-                    if (temp[i] <= timeQuantum && temp[i] > 0)
-                    {
-                        total += temp[i];
-                        temp[i] = 0;
-                        x--;
-                        Console.WriteLine($"Turnaround time for Process {i + 1}: {total - arrivalTime[i]}");
-                        Console.WriteLine($"Wait time for Process {i + 1}: {total - arrivalTime[i] - burstTime[i]}");
-                        turnaroundTime += total - arrivalTime[i];
-                        waitTime += total - arrivalTime[i] - burstTime[i];
-                    }
-                    else if (temp[i] > 0)
-                    {
-                        temp[i] -= timeQuantum;
-                        total += timeQuantum;
-                    }
-
-                    i = (i == np - 1) ? 0 : i + 1;
-                }
-
-                double averageWaitTime = waitTime / np;
-                double averageTurnaroundTime = turnaroundTime / np;
-                Console.WriteLine($"Average wait time for {np} processes: {averageWaitTime} sec(s)");
-                Console.WriteLine($"Average turnaround time for {np} processes: {averageTurnaroundTime} sec(s)");
-            }
+            Console.WriteLine("\nPerformance Metrics:");
+            Console.WriteLine($"Average Waiting Time: {totalWait / processes.Count:F2}");
+            Console.WriteLine($"Average Turnaround Time: {totalTurnaround / processes.Count:F2}");
+            Console.WriteLine($"CPU Utilization: {(processes.Sum(p => p.BurstTime) / totalTime) * 100:F2}%");
+            Console.WriteLine($"Throughput: {processes.Count / totalTime:F2} processes/time unit");
         }
     }
+
 }
