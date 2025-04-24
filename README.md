@@ -3,7 +3,7 @@
 ## Project Overview
 Simulates 6 CPU scheduling algorithms (FCFS, SJF, Priority, Round Robin, LJF, LRJF) with performance metrics analysis. Created for CS 3502 Operating Systems project.
 
-Original Project sourced from: https://github.com/FrancisNweke/CPU-Simulator-GUI
+Algorithms.cs sourced from: https://github.com/FrancisNweke/CPU-Simulator-GUI
 
 ## Notible Changes
 Alogirthms.cs 
