@@ -1,0 +1,80 @@
+Test Case 1: 
+Processes: 3
+P1: 0 5
+P2: 1 3
+P3: 2 6
+
+Test Case 2: 
+4 Processes
+P1 0 8
+P2 0 8
+P3 0 8
+P4 0 8
+
+Test Case 3:
+10 Processes:
+Random Arrival(0-10) and Burst(1-15)
+P1 3 15
+P2 2 14
+P3 0 3
+P4 10 2
+P5 10 10
+P6 1 5
+P7 10 15
+P8 0 1
+P9 3 3
+P10 6 12
+
+FCFS:
+Case 1:
+0 P1 5 P2 8 P3 14
+
+Performance Metrics:
+Average Waiting Time: 3.33
+Average Turnaround Time: 8.00
+Average Response Time: 3.33
+CPU Utilization: 100.00%
+Throughput: 0.21 processes/time unit
+Case 2:
+0 P1 8 P2 16 P3 24 P4 32
+
+Performance Metrics:
+Average Waiting Time: 12.00
+Average Turnaround Time: 20.00
+Average Response Time: 12.00
+CPU Utilization: 100.00%
+Throughput: 0.12 processes/time unit
+Case 3:
+0 P3 3 P8 4 P6 9 P2 23 P1 38 P9 41 P10 53 P4 55 P5 65 P7 80
+
+Performance Metrics:
+Average Waiting Time: 24.60
+Average Turnaround Time: 32.60
+Average Response Time: 24.60
+CPU Utilization: 100.00%
+Throughput: 0.12 processes/time unit
+
+SJF:
+Case 1:
+Case 2:
+Case 3:
+
+Priority:
+Case 1:
+Case 2:
+Case 3:
+
+RoundRobin:
+Case 1:
+Case 2:
+Case 3:
+
+LJF:
+Case 1:
+Case 2:
+Case 3:
+
+LRJF:
+Case 1:
+Case 2:
+Case 3:

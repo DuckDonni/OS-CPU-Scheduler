@@ -19,7 +19,13 @@ namespace CpuSchedulingConsole
                 Console.WriteLine("7. Exit");
                 Console.Write("Select algorithm: ");
 
+
+                
                 var choice = Console.ReadLine();
+
+                if (choice == "7") 
+                    break;
+                
 
                 Console.Write("Enter number of processes: ");
                 var input = Console.ReadLine();

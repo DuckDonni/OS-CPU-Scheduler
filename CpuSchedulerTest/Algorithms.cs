@@ -12,6 +12,7 @@ namespace CpuSchedulingConsole
             var processes = new List<Process>();
             double currentTime = 0;
             var timeline = new List<string>();
+
             for (int i = 0; i < np; i++)
             {
                 Console.Write($"Enter arrival time for P{i + 1}: ");
@@ -34,6 +35,9 @@ namespace CpuSchedulingConsole
             {
                 if (currentTime < p.ArrivalTime)
                     currentTime = p.ArrivalTime;
+
+                if (p.ResponseTime == 0)
+                    p.ResponseTime = currentTime - p.ArrivalTime;
 
                 timeline.Add($"{currentTime} P{p.Id}");
                 p.WaitingTime = currentTime - p.ArrivalTime;
@@ -82,10 +86,13 @@ namespace CpuSchedulingConsole
                 }
 
                 var currentProcess = available.First();
+
+                if (currentProcess.ResponseTime == 0)
+                    currentProcess.ResponseTime = currentTime - currentProcess.ArrivalTime;
+
                 timeline.Add($"{currentTime} P{currentProcess.Id}");
 
                 currentProcess.WaitingTime = currentTime - currentProcess.ArrivalTime;
-
                 currentTime += currentProcess.RemainingTime;
                 currentProcess.RemainingTime = 0;
                 currentProcess.TurnaroundTime = currentTime - currentProcess.ArrivalTime;
@@ -137,10 +144,13 @@ namespace CpuSchedulingConsole
                 }
 
                 var currentProcess = available.First();
+
+                if (currentProcess.ResponseTime == 0)
+                    currentProcess.ResponseTime = currentTime - currentProcess.ArrivalTime;
+
                 timeline.Add($"{currentTime} P{currentProcess.Id}");
 
                 currentProcess.WaitingTime = currentTime - currentProcess.ArrivalTime;
-
                 currentTime += currentProcess.RemainingTime;
                 currentProcess.RemainingTime = 0;
                 currentProcess.TurnaroundTime = currentTime - currentProcess.ArrivalTime;
@@ -149,6 +159,7 @@ namespace CpuSchedulingConsole
 
             PrintMetrics(processes, timeline, currentTime);
         }
+
         public static void RoundRobinAlgorithm(string userInput)
         {
             int np = Convert.ToInt32(userInput);
@@ -196,6 +207,10 @@ namespace CpuSchedulingConsole
                 }
 
                 var currentProcess = queue.Dequeue();
+
+                if (currentProcess.ResponseTime == 0)
+                    currentProcess.ResponseTime = currentTime - currentProcess.ArrivalTime;
+
                 if (lastProcessId != currentProcess.Id)
                 {
                     timeline.Add($"{currentTime} P{currentProcess.Id}");
@@ -227,6 +242,7 @@ namespace CpuSchedulingConsole
 
             PrintMetrics(processes, timeline, currentTime);
         }
+
         public static void LJFAlgorithm(string userInput)
         {
             int np = Convert.ToInt32(userInput);
@@ -234,7 +250,6 @@ namespace CpuSchedulingConsole
             double currentTime = 0;
             var timeline = new List<string>();
 
-            // Input processes
             for (int i = 0; i < np; i++)
             {
                 Console.Write($"Enter arrival time for P{i + 1}: ");
@@ -251,7 +266,6 @@ namespace CpuSchedulingConsole
                 });
             }
 
-            // LJF scheduling
             int completed = 0;
             while (completed < np)
             {
@@ -268,6 +282,10 @@ namespace CpuSchedulingConsole
                 }
 
                 var currentProcess = available.First();
+
+                if (currentProcess.ResponseTime == 0)
+                    currentProcess.ResponseTime = currentTime - currentProcess.ArrivalTime;
+
                 timeline.Add($"{currentTime} P{currentProcess.Id}");
 
                 currentProcess.WaitingTime = currentTime - currentProcess.ArrivalTime;
@@ -280,7 +298,6 @@ namespace CpuSchedulingConsole
             PrintMetrics(processes, timeline, currentTime);
         }
 
-        // Longest Remaining Job First (Preemptive)
         public static void LRJFAlgorithm(string userInput)
         {
             int np = Convert.ToInt32(userInput);
@@ -289,7 +306,6 @@ namespace CpuSchedulingConsole
             var timeline = new List<string>();
             Process currentProcess = null;
 
-            // Input processes
             for (int i = 0; i < np; i++)
             {
                 Console.Write($"Enter arrival time for P{i + 1}: ");
@@ -306,7 +322,6 @@ namespace CpuSchedulingConsole
                 });
             }
 
-            // LRJF scheduling
             int completed = 0;
             while (completed < np)
             {
@@ -323,6 +338,9 @@ namespace CpuSchedulingConsole
                 }
 
                 var nextProcess = candidates.First();
+
+                if (nextProcess.ResponseTime == 0)
+                    nextProcess.ResponseTime = currentTime - nextProcess.ArrivalTime;
 
                 if (currentProcess != nextProcess)
                 {
@@ -350,6 +368,7 @@ namespace CpuSchedulingConsole
 
             PrintMetrics(processes, timeline, currentTime);
         }
+
         private static void PrintMetrics(List<Process> processes, List<string> timeline, double totalTime)
         {
             Console.WriteLine("\nExecution Timeline:");
@@ -358,10 +377,10 @@ namespace CpuSchedulingConsole
             Console.WriteLine("\nPerformance Metrics:");
             Console.WriteLine($"Average Waiting Time: {processes.Average(p => p.WaitingTime):F2}");
             Console.WriteLine($"Average Turnaround Time: {processes.Average(p => p.TurnaroundTime):F2}");
+            Console.WriteLine($"Average Response Time: {processes.Average(p => p.ResponseTime):F2}");
             Console.WriteLine($"CPU Utilization: {processes.Sum(p => p.BurstTime) / totalTime * 100:F2}%");
             Console.WriteLine($"Throughput: {processes.Count / totalTime:F2} processes/time unit\n");
         }
-
     }
 
     public class Process
@@ -372,6 +391,7 @@ namespace CpuSchedulingConsole
         public double RemainingTime { get; set; }
         public double WaitingTime { get; set; }
         public double TurnaroundTime { get; set; }
+        public double ResponseTime { get; set; }
         public int Priority { get; set; }
     }
 }
